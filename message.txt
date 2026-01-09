@@ -1,0 +1,16 @@
+The structure of your code and documentation will be analysed and assessed.
+
+This will be done using a static analysis tool called Pylint. This software checks the code in your program, ensures that it follows Python conventions and that all functions, classes and modules have been documented. You can read more about it here:  https://www.pylint.org/.
+
+Python has an official style guide named PEP8 (https://peps.python.org/pep-0008/), which is where most Python conventions and coding standards originate from. 
+
+Example checks that Pylint carries out to ensure that the PEP8 coding standard is followed include things such as:
+o	checking line-code's length
+o	checking if variable names are well-formed
+o	checking if imported modules/functions are used
+o	checking if variables/function parameters are used
+
+
+It is a good idea to run these checks on your code at regular intervals and before submitting.  
+
+Note: Marks will be deducted for warning and errors detected in your code.
