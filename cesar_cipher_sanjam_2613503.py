@@ -35,12 +35,13 @@ def enter_message():
         modeOfConversion,message,shiftNumber
     )
 
-
 # print(enter_message()) 
 # print(string.ascii_uppercase)
 capitalLetters = string.ascii_uppercase #"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 alphaList = list(capitalLetters) #["A","B","C","D",...,"Z"]
 
+
+# It encrypts the message with the given shift number using some mathmatical logic 
 def encrypt(message,shift):
     #message is expected to be in upper case - handled by enter message fn 
     encryptedmessage  = ""
@@ -57,6 +58,7 @@ def encrypt(message,shift):
 
 # print(encrypt("I LOVE YOU",4))
 
+# It decrypt messages based on the shift number using mathmatical logic .
 def decrypt(message,shift):
     
     #message is expected to be in upper case - handled by enter message fn 
@@ -79,6 +81,7 @@ def decrypt(message,shift):
 
 # File Input/Output (25%):
 
+# This module / function  takes fileName , mode , shiftNumber as function paramater , it processes the file and returns the list of  (encrypted/decrypted messsages) by processsing the file content  as per the given mode in the fn paramater. 
 def process_file(fileName, mode,shiftNumber):
     #, returning a list of encrypted/decrypted messages.
 
@@ -93,20 +96,20 @@ def process_file(fileName, mode,shiftNumber):
     return messages
 
 
-
+# This functions takes the fileName as the input and returns if the file is present inside the same directory/folder  or not . 
 def is_file(fileName):
     return os.path.exists(fileName)
 
 # print(is_file("message.txt"))
 
 
-
+# It takes the list of encrypted/decrypted messages and writes them into results.txt 
 def write_messages(messages=[]): # messages is a list of multiple strings / message
     with open("results.txt","w") as f:
         f.writelines(messages)
     
 
-
+# This is one of the module where most of the logic is written , logic includes , asking user for selecting mode in which the want to encrypt / decrypt using ( file or console ) and other logic are same as previous enter_message() module - Code is somehow repeated :)
 def message_or_file():
     while  True : 
         modeOfConversion =  input("Would you like to encrypt (e) or decrypt (d): ").lower()
@@ -192,7 +195,7 @@ def message_or_file():
         return (modeOfConversion,message,None)      
             
 
-
+# This is the main function which runs in the runtime and joins other modules together ;
 def main():
     welcome()
     while True :
