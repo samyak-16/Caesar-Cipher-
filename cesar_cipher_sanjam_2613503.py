@@ -1,6 +1,8 @@
 import string 
 import os 
 
+
+# This module prints the information  about the program and welcomes the user using the program .
 def welcome():
     print("Welcome to the Caesar Cipher")
     print("This program encrypts and decrypts text with the Caesar Cipher.")
@@ -8,6 +10,7 @@ def welcome():
 
 # welcome()
 
+# This module or function helps user to take input for modeOfConversion , message , shiftnumber  and validate it through infinite loops once fully validated it breaks the loop and proceeds to next step or logic .
 def enter_message():
     
     while  True : 
