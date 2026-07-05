@@ -1,220 +1,235 @@
-import string 
-import os 
+import os
+import string
+
+ALPHABET = string.ascii_uppercase
 
 
-# This module prints the information  about the program and welcomes the user using the program .
 def welcome():
+    """
+    display a welcome message
+    """
     print("Welcome to the Caesar Cipher")
     print("This program encrypts and decrypts text with the Caesar Cipher.")
-    
 
-# welcome()
 
-# This module or function helps user to take input for modeOfConversion , message , shiftnumber  and validate it through infinite loops once fully validated it breaks the loop and proceeds to next step or logic .
+def get_shift():
+    """
+    prompt the user for a valid shift number.
+
+    Returns:
+        int: The shift value.
+    """
+    while True:
+        try:
+            shift = int(input("What is the shift number: "))
+            return shift
+        except ValueError:
+            print("Invalid Shift")
+
+
 def enter_message():
-    
-    while  True : 
-        modeOfConversion =  input("Would you like to encrypt (e) or decrypt (d): ").lower()
-        if(modeOfConversion  in["e","d"]):
-            break
-        else:
-            print("Invalid Mode")
+    """
+    Prompt the user for mode, message and shift.
 
-    if(modeOfConversion == "e"):
+    Returns:
+        tuple: (mode, message, shift)
+    """
+    while True:
+        mode = input("Would you like to encrypt (e) or decrypt (d): ").lower()
+
+        if mode in ("e", "d"):
+            break
+
+        print("Invalid Mode")
+
+    if mode == "e":
         message = input("What message would you like to encrypt: ").upper()
     else:
         message = input("What message would you like to decrypt: ").upper()
-    
-    while True :
-        try : 
-            shiftNumber =  int(input("What is the shift number: "))
-            break
-        except ValueError :
-            print("Invalid Shift")
-    return (
-        modeOfConversion,message,shiftNumber
-    )
 
-# print(enter_message()) 
-# print(string.ascii_uppercase)
-capitalLetters = string.ascii_uppercase #"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-alphaList = list(capitalLetters) #["A","B","C","D",...,"Z"]
+    shift = get_shift()
+
+    return mode, message, shift
 
 
-# It encrypts the message with the given shift number using some mathmatical logic 
-def encrypt(message,shift):
-    #message is expected to be in upper case - handled by enter message fn 
-    encryptedmessage  = ""
-    for i in message.upper( ) :
-        if(i not in alphaList):
-            encryptedmessage+=i
+def encrypt(message, shift):
+    """
+    Encrypt a message using Caesar Cipher.
+
+    Args:
+        message (str): Message to encrypt.
+        shift (int): Shift amount.
+
+    Returns:
+        str: Encrypted message.
+    """
+    encrypted_message = ""
+
+    for character in message.upper():
+        if character not in ALPHABET:
+            encrypted_message += character
         else:
-            originalLetterIndex = alphaList.index(i)
-            encryptedLetterIndex = originalLetterIndex+shift
-            encryptedLetter = alphaList[encryptedLetterIndex % len(alphaList)]
-            encryptedmessage+=encryptedLetter
-    
-    return encryptedmessage
+            index = ALPHABET.index(character)
+            new_index = (index + shift) % 26
+            encrypted_message += ALPHABET[new_index]
 
-# print(encrypt("I LOVE YOU",4))
+    return encrypted_message
 
-# It decrypt messages based on the shift number using mathmatical logic .
-def decrypt(message,shift):
-    
-    #message is expected to be in upper case - handled by enter message fn 
-    decryptedmessage  = ""
-    for i in message.upper() :
-        if(i not in alphaList):
-            decryptedmessage+=i
+
+def decrypt(message, shift):
+    """
+    Decrypt a Caesar Cipher message.
+
+    Args:
+        message (str): Message to decrypt.
+        shift (int): Shift amount.
+
+    Returns:
+        str: Decrypted message.
+    """
+    decrypted_message = ""
+
+    for character in message.upper():
+        if character not in ALPHABET:
+            decrypted_message += character
         else:
-            encryptedLetterIndex = alphaList.index(i)
-            originalLetterIndex =  encryptedLetterIndex-shift
-            originalLetter = alphaList[originalLetterIndex % len(alphaList)]
-            decryptedmessage+=originalLetter
-    
-    return decryptedmessage
+            index = ALPHABET.index(character)
+            new_index = (index - shift) % 26
+            decrypted_message += ALPHABET[new_index]
+
+    return decrypted_message
 
 
-# print(decrypt("LIPPS ASVPH",4))
+def process_file(filename, mode, shift):
+    """
+    Read messages from a file and process them.
 
-#---------------------------------------------------------------------------------------------------------------------------------------
+    Args:
+        filename (str): Input filename.
+        mode (str): 'e' or 'd'.
+        shift (int): Shift amount.
 
-# File Input/Output (25%):
+    Returns:
+        list: Processed messages.
+    """
+    processed_messages = []
 
-# This module / function  takes fileName , mode , shiftNumber as function paramater , it processes the file and returns the list of  (encrypted/decrypted messsages) by processsing the file content  as per the given mode in the fn paramater. 
-def process_file(fileName, mode,shiftNumber):
-    #, returning a list of encrypted/decrypted messages.
+    with open(filename, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
 
-    with open(fileName) as f : 
-        messages =[]
-        if(mode=="e"):
-            for line in f:
-                messages.append(encrypt(line.strip().upper(),shiftNumber)+"\n") # shift is missing , will implement later 
-        else:
-            for line in f :
-                messages.append(decrypt(line.strip().upper(),shiftNumber)+"\n") # shift is missing, will implement later
-    return messages
+            if mode == "e":
+                processed_messages.append(encrypt(line, shift))
+            else:
+                processed_messages.append(decrypt(line, shift))
 
-
-# This functions takes the fileName as the input and returns if the file is present inside the same directory/folder  or not . 
-def is_file(fileName):
-    return os.path.exists(fileName)
-
-# print(is_file("message.txt"))
+    return processed_messages
 
 
-# It takes the list of encrypted/decrypted messages and writes them into results.txt 
-def write_messages(messages=[]): # messages is a list of multiple strings / message
-    with open("results.txt","w") as f:
-        f.writelines(messages)
-    
+def is_file(filename):
+    """
+    Check if a file exists.
 
-# This is one of the module where most of the logic is written , logic includes , asking user for selecting mode in which the want to encrypt / decrypt using ( file or console ) and other logic are same as previous enter_message() module - Code is somehow repeated :)
+    Args:
+        filename (str): Filename to check.
+
+    Returns:
+        bool: True if file exists.
+    """
+    return os.path.isfile(filename)
+
+
+def write_messages(messages):
+    """
+    Write messages to results.txt.
+
+    Args:
+        messages (list): Messages to write.
+    """
+    with open("results.txt", "w", encoding="utf-8") as file:
+        for message in messages:
+            file.write(message + "\n")
+
+
 def message_or_file():
-    while  True : 
-        modeOfConversion =  input("Would you like to encrypt (e) or decrypt (d): ").lower()
-        if(modeOfConversion in["e","d"]):
-            break
-        else:
-            print("Invalid Mode")
+    """
+    Gather information about processing method.
 
-    # if(modeOfConversion == "e"):
-    #     message = input("What message would you like to encrypt: ").upper()
-    # else:
-    #     message = input("What message would you like to decrypt: ").upper()
-    
-    # while True :
-    #     try : 
-    #         shiftNumber =  int(input("What is the shift number: "))
-    #         break
-    #     except ValueError :
-    #         print("Invalid Shift")
-    while True : 
-        userOption = input("Would you like to read from a file (f) or the console (c)? ").lower()
-        if(userOption in ["f","c"]):
+    Returns:
+        tuple: (mode, message, filename)
+    """
+    while True:
+        mode = input("Would you like to encrypt (e) or decrypt (d): ").lower()
+
+        if mode in ("e", "d"):
             break
-        else :
-            print("Invalid Option")
-    
-    if(userOption=="f"):
-        while True :
-            fileName = input("Enter a filename: ")
-            if(is_file(fileName)):
-                break
-            else:
-                    print("Invalid Filename")
-        if(modeOfConversion=="e"):
-            while True :
-             try : 
-                shiftNumber =  int(input("What is the shift number: "))
-                break
-             except ValueError :
-                 print("Invalid Shift")
-            encryptedMessages = process_file(fileName,"e",shiftNumber)
-            write_messages(encryptedMessages)
-            print("Output written to results.txt")
-            # return (modeOfConversion,)
-            
-        else : #d
-            while True :
-             try : 
-                shiftNumber =  int(input("What is the shift number: "))
-                break
-             except ValueError :
-                 print("Invalid Shift")
-            decryptedMessages = process_file(fileName,"d",shiftNumber)
-            write_messages(decryptedMessages)
-            print("Output written to results.txt")
-            
-            
-        
-    else:
-        if(modeOfConversion=="e"):
+
+        print("Invalid Mode")
+
+    while True:
+        source = input(
+            "Would you like to read from a file (f) or the console (c)? "
+        ).lower()
+
+        if source in ("f", "c"):
+            break
+
+        print("Invalid Option")
+
+    if source == "c":
+        if mode == "e":
             message = input("What message would you like to encrypt: ").upper()
-            while True :
-             try : 
-                shiftNumber =  int(input("What is the shift number: "))
-                break
-             except ValueError :
-                 print("Invalid Shift")
-            encryptedMessage = encrypt(message,shiftNumber)
-            print(encryptedMessage)
         else:
-            message = input("What message would you like to decrypt: ").upper( )
-            while True :
-             try : 
-                shiftNumber =  int(input("What is the shift number: "))
-                break
-             except ValueError :
-                 print("Invalid Shift")
-            decryptedMessage = decrypt(message,shiftNumber)
-            print(decryptedMessage)
-    if(userOption=="f"):
-        return (modeOfConversion,None ,fileName)  
-    else:
-        return (modeOfConversion,message,None)      
-            
+            message = input("What message would you like to decrypt: ").upper()
 
-# This is the main function which runs in the runtime and joins other modules together ;
+        return mode, message, None
+
+    while True:
+        filename = input("Enter a filename: ")
+
+        if is_file(filename):
+            return mode, None, filename
+
+        print("Invalid Filename")
+
+
 def main():
+    """
+    Main program loop.
+    """
     welcome()
-    while True :
-        message_or_file()
-        while True:
-            userInput = input("Would you like to encrypt or decrypt another message? (y/n): ")
-            if(userInput  in ["y","n"]):
-                break
+
+    while True:
+        mode, message, filename = message_or_file()
+
+        shift = get_shift()
+
+        if filename is not None:
+            processed_messages = process_file(filename, mode, shift)
+
+            write_messages(processed_messages)
+
+            print("Output written to results.txt")
+
+        else:
+            if mode == "e":
+                print(encrypt(message, shift))
             else:
-                print("Invalid Option Choosed")
-        if(userInput=="n"):
-            print("Thanks for using the program, goodbye! ")
+                print(decrypt(message, shift))
+
+        while True:
+            choice = input(
+                "Would you like to encrypt or decrypt another message? (y/n): "
+            ).lower()
+
+            if choice in ("y", "n"):
+                break
+
+            print("Invalid Option")
+
+        if choice == "n":
+            print("Thanks for using the program, goodbye!")
             break
-        
-           
-           
-            
 
-
-# mode , message/None , filename/None 
 
 main()
